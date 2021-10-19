@@ -1,0 +1,22 @@
+version: "3"
+services:
+  travel-app:
+    image: postgres
+    container_name: travel-app
+    hostname: travel-app
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=travel-app
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    restart: always
+    networks:
+      - travelApp-network
+
+networks:
+  travelApp-network:
+    name: travel-app-network
+    driver: bridge
