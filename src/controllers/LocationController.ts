@@ -15,22 +15,23 @@ class LocationController {
   }
   async newLocation(req: Request, res: Response) {
     try {
-      const coords: ICoords = req.body.coords;
+      const coords: ICoords = req.body;
       const prisma = new PrismaClient();
+      console.log(coords);
 
-      if (coords.lat && coords.long) {
-        prisma.location
-          .create({
-            data: {
-              lat: coords.lat,
-              long: coords.long,
-            },
-          })
-          .then(() => {
-            return res.send();
-          });
+      if (!coords.lat && !coords.long) {
+        return res.send({ error: "unexpected chars in latitude or longitude" });
       }
-      return res.send({ error: "unexpected chars in latitude or longitude" });
+      prisma.location
+        .create({
+          data: {
+            lat: coords.lat,
+            long: coords.long,
+          },
+        })
+        .then(() => {
+          return res.send();
+        });
     } catch (err) {
       return res.send(400);
     }
