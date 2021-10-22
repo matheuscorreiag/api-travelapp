@@ -2,8 +2,10 @@ import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 
 interface ICoords {
+  message: string;
   lat: number;
   long: number;
+  name: string;
 }
 class LocationController {
   async getAllLocations(req: Request, res: Response) {
@@ -15,18 +17,22 @@ class LocationController {
   }
   async newLocation(req: Request, res: Response) {
     try {
-      const coords: ICoords = req.body;
+      const body: ICoords = req.body;
       const prisma = new PrismaClient();
-      console.log(coords);
+      console.log(body);
 
-      if (!coords.lat && !coords.long) {
-        return res.send({ error: "unexpected chars in latitude or longitude" });
+      if (!body.lat || !body.long || !body.message || !body.name) {
+        return res.send({
+          error: "unexpected chars in latitude, longitude or message",
+        });
       }
       prisma.location
         .create({
           data: {
-            lat: coords.lat,
-            long: coords.long,
+            message: body.message,
+            lat: body.lat,
+            long: body.long,
+            name: body.name,
           },
         })
         .then(() => {
