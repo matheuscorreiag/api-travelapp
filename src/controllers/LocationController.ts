@@ -11,11 +11,11 @@ class LocationController {
   async getAllLocations(req: Request, res: Response) {
     try {
       const prisma = new PrismaClient();
-      prisma.location.findMany().then((locations) => {
-        return res.send(locations);
-      });
+      const data = await prisma.location.findMany();
+
+      return res.json({ status: 200, data: data });
     } catch (err) {
-      return res.send(400);
+      return res.json({ status: 500, data: "Error" });
     }
   }
   async getLocationByCoords(req: Request, res: Response) {
@@ -29,22 +29,20 @@ class LocationController {
           long: Number(body.long),
         },
       });
-      return res.send(data);
+      if (!data) {
+        return res.json({ status: 404, data: "Location not found" });
+      }
+      return res.json({ status: 200, data: data });
     } catch (err) {
-      console.log(err);
+      return res.json({ status: 404, data: "Location not found" });
     }
   }
-  async newLocation(req: Request, res: Response) {
+  async addMarker(req: Request, res: Response) {
     try {
       const body: ICoords = req.body;
       const prisma = new PrismaClient();
 
-      if (!body.lat || !body.long || !body.message || !body.name) {
-        return res.send({
-          error: "unexpected chars in latitude, longitude or message",
-        });
-      }
-      prisma.location
+      await prisma.location
         .create({
           data: {
             message: body.message,
@@ -54,10 +52,16 @@ class LocationController {
           },
         })
         .then(() => {
-          return res.send();
+          return res.json({ status: 200, data: body });
+        })
+        .catch((err) => {
+          return res.json({
+            status: 404,
+            data: "Marker not found... maybe missing some params?",
+          });
         });
     } catch (err) {
-      return res.send(400);
+      return res.send(500);
     }
   }
 }
