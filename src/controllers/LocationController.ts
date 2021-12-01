@@ -41,18 +41,20 @@ class LocationController {
     try {
       const body: ICoords = req.body;
       const prisma = new PrismaClient();
+      const { location: url = "" } = <any>req.file;
 
       await prisma.location
         .create({
           data: {
             message: body.message,
-            lat: body.lat,
-            long: body.long,
+            lat: Number(body.lat),
+            long: Number(body.long),
             name: body.name,
+            image: url,
           },
         })
         .then(() => {
-          return res.json({ status: 200, data: body });
+          return res.json({ status: 200, data: { ...body, url } });
         })
         .catch((err) => {
           return res.json({

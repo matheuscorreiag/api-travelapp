@@ -16,4 +16,5 @@ model Location {
   long    Float
   message String
   name    String
+  image   String
 }
