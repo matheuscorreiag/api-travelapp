@@ -4,6 +4,15 @@ import crypto from "crypto";
 import aws from "aws-sdk";
 import multerS3 from "multer-s3";
 
+let myConfig = new aws.Config();
+
+myConfig.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID_MYAPP,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY_MYAPP,
+});
+
+const s3 = new aws.S3(myConfig);
+
 const storageTypes = {
   local: multer.diskStorage({
     destination: (req, file, cb) => {
@@ -22,7 +31,7 @@ const storageTypes = {
     },
   }),
   s3: multerS3({
-    s3: new aws.S3(),
+    s3: s3,
     bucket: "api-travelapp",
     contentType: multerS3.AUTO_CONTENT_TYPE,
     acl: "public-read",
