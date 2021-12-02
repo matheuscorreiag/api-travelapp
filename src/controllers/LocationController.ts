@@ -43,25 +43,32 @@ class LocationController {
       const prisma = new PrismaClient();
       const { location: url = "" } = <any>req.file;
 
-      await prisma.location
-        .create({
-          data: {
-            message: body.message,
-            lat: Number(body.lat),
-            long: Number(body.long),
-            name: body.name,
-            image: url,
-          },
-        })
-        .then(() => {
-          return res.json({ status: 200, data: { ...body, url } });
-        })
-        .catch((err) => {
-          return res.json({
-            status: 404,
-            data: "Marker not found... maybe missing some params?",
+      if (
+        req.body.name !== undefined &&
+        req.body.lat !== undefined &&
+        req.body.long !== undefined
+      ) {
+        await prisma.location
+          .create({
+            data: {
+              message: body.message,
+              lat: Number(body.lat),
+              long: Number(body.long),
+              name: body.name,
+              image: url,
+            },
+          })
+          .then(() => {
+            return res.json({ status: 200, data: { ...body } });
+          })
+          .catch((err) => {
+            return res.json({
+              status: 404,
+              data: "Marker not found... maybe missing some params?",
+            });
           });
-        });
+      }
+      return;
     } catch (err) {
       return res.send(500);
     }
