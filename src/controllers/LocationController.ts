@@ -8,6 +8,21 @@ interface ICoords {
   name: string;
 }
 class LocationController {
+  /**
+   * @swagger
+   *  /:
+   *   get:
+   *      summary: Get all locations
+   *      type: object
+   *      responses:
+   *       200:
+   *          description: success
+   *       500:
+   *          description: error
+   *
+   *
+   */
+
   async getAllLocations(req: Request, res: Response) {
     try {
       const prisma = new PrismaClient();
@@ -18,6 +33,39 @@ class LocationController {
       return res.json({ status: 500, data: "Error" });
     }
   }
+
+  /**
+   * @swagger
+   *  /getLocationByCoords:
+   *   get:
+   *      summary: Get location by coords
+   *      type: object
+   *      consumes:
+   *        - application/json
+   *      parameters:
+   *        - in: query
+   *          name: lat
+   *          schema:
+   *              lat:
+   *                type: number
+   *        - in: query
+   *          name: long
+   *          schema:
+   *              long:
+   *                type: number
+   *      responses:
+   *       200:
+   *          description: success
+   *       500:
+   *          description: error
+   *
+   *
+   *
+   *
+   *
+   *
+   */
+
   async getLocationByCoords(req: Request, res: Response) {
     try {
       const body = req.query;
@@ -37,6 +85,38 @@ class LocationController {
       return res.json({ status: 404, data: "Location not found" });
     }
   }
+
+  /**
+   * @swagger
+   *  /addMarker:
+   *   post:
+   *      content:
+   *         multipart/form-data:
+   *      parameters:
+   *        - in: formData
+   *          name: name
+   *          type: string
+   *        - in: formData
+   *          name: lat
+   *          type: number
+   *        - in: formData
+   *          name: long
+   *          type: number
+   *        - in: formData
+   *          name: message
+   *          type: string
+   *        - in: formData
+   *          name: file
+   *          type: file
+   *
+   *      responses:
+   *       200:
+   *          description: success
+   *       500:
+   *          description: error
+   *
+   */
+
   async addMarker(req: Request, res: Response) {
     try {
       const body: ICoords = req.body;
