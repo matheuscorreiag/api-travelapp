@@ -4,5 +4,6 @@ CREATE TABLE "Location" (
     "lat" REAL NOT NULL,
     "long" REAL NOT NULL,
     "message" TEXT NOT NULL,
-    "name" TEXT NOT NULL
+    "name" TEXT NOT NULL,
+    "image" TEXT NOT NULL
 );
