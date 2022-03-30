@@ -4,6 +4,8 @@ import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import multer from "multer";
 import multerConfig from "./config/multer";
+import cron from "node-cron";
+import fetch from "node-fetch";
 
 const routes = express.Router();
 const options = {
@@ -19,6 +21,12 @@ const options = {
   apis: ["**/*.ts"],
 };
 const swaggerDocs = swaggerJSDoc(options);
+
+cron.schedule("0 */30 * * * *", async () => {
+  const ping = await fetch("https://api-traveller-app.herokuapp.com/");
+
+  console.log(ping);
+});
 
 routes.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
