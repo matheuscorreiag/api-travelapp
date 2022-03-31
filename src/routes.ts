@@ -23,9 +23,7 @@ const options = {
 const swaggerDocs = swaggerJSDoc(options);
 
 cron.schedule("0 */30 * * * *", async () => {
-  const ping = await fetch("https://api-traveller-app.herokuapp.com/");
-
-  console.log(ping);
+  console.log("pingando api para nao ter sleep");
 });
 
 routes.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
